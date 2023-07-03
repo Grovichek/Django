@@ -8,6 +8,7 @@ packages = [{include = "python_django_diploma"}]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+django = "4.2.3"
 
 
 [build-system]
