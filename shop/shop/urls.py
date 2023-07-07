@@ -27,7 +27,7 @@ urlpatterns = [
     path("", include("app_payment.urls")),
     path("", include("app_profile.urls")),
     path("", include("app_tags.urls")),
-    path("", include("app_product.urls")),
+    path("", include("app_tags.urls")),
     path("", include("app_auth.urls")),
 
 ]
