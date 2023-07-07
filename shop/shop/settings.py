@@ -60,6 +60,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
     'request_logging.middleware.LoggingMiddleware',
+
 ]
 
 ROOT_URLCONF = 'shop.urls'
