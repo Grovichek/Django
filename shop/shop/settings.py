@@ -88,8 +88,12 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'diploma',  # Название базы
+        'USER': 'diploma',  # Имя пользователя
+        'PASSWORD': 'Password1',  # Пароль пользователя
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
