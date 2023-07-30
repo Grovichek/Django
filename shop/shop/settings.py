@@ -36,7 +36,18 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+
     'frontend',
+    'app_home.apps.AppHomeConfig',
+    'app_catalog.apps.AppCatalogConfig',
+    'app_basket.apps.AppBasketConfig',
+    'app_order.apps.AppOrderConfig',
+    'app_payment.apps.AppPaymentConfig',
+    'app_profile.apps.AppProfileConfig',
+    'app_tags.apps.AppTagsConfig',
+    'app_product.apps.AppProductConfig',
+    'app_auth.apps.AppAuthConfig',
+
 ]
 
 MIDDLEWARE = [
@@ -47,6 +58,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
+    'request_logging.middleware.LoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'shop.urls'
@@ -121,3 +134,20 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'DEBUG',  # change debug level as appropiate
+            'propagate': False,
+        },
+    },
+}
