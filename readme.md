@@ -14,4 +14,5 @@
    ```
    $ cd shop/
    $ python manage.py migrate
+   
    ```
