@@ -13,6 +13,12 @@
 3. Миграции
    ```
    $ cd shop/
-   $ python manage.py migrate
-   
+   $ python manage.py migrate   
+   ```
+4. Дамп
+   ```
+   1. загрузить из файла
+       $ python manage.py loaddata db.json
+   2. создать свой
+       $ python manage.py dumpdata > db.json
    ```
