@@ -5,6 +5,6 @@ from app_product.views import ProductView, ProductReviewView
 app_name = 'app_product'
 
 urlpatterns = [
-    path('api/product/<int:id>/', ProductView.as_view(), name='product'),
-    path('api/product/<int:id>/review/', ProductReviewView.as_view(), name='product-review'),
+    path('product/<int:id>/', ProductView.as_view(), name='product'),
+    path('product/<int:id>/reviews/', ProductReviewView.as_view(), name='product-review'),
 ]

@@ -11,7 +11,7 @@ class ProductImageSerializer(serializers.ModelSerializer):
 class ProductReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductReview
-        fields = ('author', 'email', 'text', 'rate', 'date')
+        fields = '__all__'
 
 
 class ProductSpecificationSerializer(serializers.ModelSerializer):
@@ -23,8 +23,7 @@ class ProductSpecificationSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     images = ProductImageSerializer(source='productimage_set', many=True)
     reviews = ProductReviewSerializer(source='productreview_set', many=True)
-    specifications = ProductSpecificationSerializer(source='productspecification_set',
-                                                    many=True)  # Используем source для связанных объектов
+    specifications = ProductSpecificationSerializer(source='productspecification_set', many=True)
 
     class Meta:
         model = Product
