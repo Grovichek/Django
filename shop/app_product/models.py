@@ -1,3 +1,5 @@
+from os import path
+
 from django.db import models
 
 
@@ -18,9 +20,10 @@ class Product(models.Model):
 
 
 def product_images_directory_path(instance: 'ProductImage', filename: str) -> str:
-    return 'products/product_{pk}/images/{filename}'.format(
-        pk=instance.product.pk,
-        filename=filename,
+    return 'products/product_{pk}/images/{filename}{extension}'.format(
+        pk=instance.product.id,
+        filename=instance.product.productimage_set.count()+1,
+        extension=path.splitext(filename)[-1],
     )
 
 
