@@ -89,7 +89,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'diploma',  # Название базы
         'USER': 'diploma',  # Имя пользователя
-        'PASSWORD': 'diploma',  # Пароль пользователя
+        'PASSWORD': 'diploma',  # Пароль пользователя #
         'HOST': 'localhost',
         'PORT': '3306',
     }
