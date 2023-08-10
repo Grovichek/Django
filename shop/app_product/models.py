@@ -4,7 +4,6 @@ from django.db import models
 
 
 class Product(models.Model):
-    id = models.IntegerField(primary_key=True)
     category = models.IntegerField()
     price = models.DecimalField(max_digits=8, decimal_places=2)
     count = models.IntegerField()
@@ -29,7 +28,7 @@ def product_images_directory_path(instance: 'ProductImage', filename: str) -> st
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to=product_images_directory_path)
+    src = models.ImageField(upload_to=product_images_directory_path)
     alt = models.CharField(max_length=200)
 
     def __str__(self):
@@ -42,7 +41,7 @@ class ProductReview(models.Model):
     email = models.EmailField()
     text = models.TextField()
     rate = models.IntegerField()
-    date = models.DateTimeField()
+    date = models.DateTimeField(auto_now_add=True)
 
 
 class ProductSpecification(models.Model):

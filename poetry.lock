@@ -18,20 +18,6 @@ typing-extensions = {version = ">=4", markers = "python_version < \"3.11\""}
 tests = ["mypy (>=0.800)", "pytest", "pytest-asyncio"]
 
 [[package]]
-name = "diploma-frontend"
-version = "0.6"
-description = "Frontend for diploma project"
-optional = false
-python-versions = "*"
-files = [
-    {file = "diploma-frontend-0.6.tar.gz", hash = "sha256:c419cd2e799471f3464f24fc614e641aadfc61464c7e270eb2c15c810e1dd95b"},
-]
-
-[package.source]
-type = "file"
-url = "diploma-frontend/dist/diploma-frontend-0.6.tar.gz"
-
-[[package]]
 name = "django"
 version = "4.2.3"
 description = "A high-level Python web framework that encourages rapid development and clean, pragmatic design."
@@ -215,4 +201,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "f591c9a74a79027202249124ca66410f506eb8466261894966c8e3d56adedc93"
+content-hash = "425d148b88dc4e826c9e7c6d9b71420dbab6c2c1b4ec8866177fa798d1f8cfed"

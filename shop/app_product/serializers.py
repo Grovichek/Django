@@ -5,19 +5,19 @@ from .models import Product, ProductImage, ProductReview, ProductSpecification
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
-        fields = '__all__'
+        fields = ('src', 'alt')
 
 
 class ProductReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductReview
-        fields = '__all__'
+        fields = ('author', 'email', 'text', 'rate', 'date')
 
 
 class ProductSpecificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductSpecification
-        fields = '__all__'
+        fields = ('name', 'value')
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -27,4 +27,6 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = (
+        'id', 'category', 'price', 'count', 'date', 'title', 'description', 'full_description', 'free_delivery',
+        'images', 'reviews', 'specifications', 'rating')
