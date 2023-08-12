@@ -18,7 +18,7 @@ class Product(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     title = models.CharField(max_length=200)
     description = models.TextField(max_length=200)
-    full_description = models.TextField(max_length=800)
+    full_description = models.TextField(max_length=2000)
     free_delivery = models.BooleanField(default=False)
 
     def __str__(self):
@@ -47,7 +47,7 @@ class ProductSpecification(models.Model):
 
 
 class ProductTag(models.Model):
-    product = models.ManyToManyField(Product)
+    product = models.ManyToManyField(Product, blank=True)
     name = models.CharField(max_length=50)
 
     def __str__(self):

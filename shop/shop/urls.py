@@ -28,7 +28,6 @@ urlpatterns = [
     # path("api/", include("app_order.urls")),
     # path("api/", include("app_payment.urls")),
     # path("api/", include("app_profile.urls")),
-    # path("api/", include("app_tags.urls")),
     path("api/", include("app_product.urls")),
     # path("api/", include("app_auth.urls")),
 

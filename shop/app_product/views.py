@@ -1,8 +1,8 @@
-from rest_framework.generics import CreateAPIView, RetrieveAPIView
+from rest_framework.generics import CreateAPIView, RetrieveAPIView, ListAPIView
 from rest_framework.response import Response
 from rest_framework import status
-from .models import Product
-from .serializers import ProductSerializer, ProductReviewSerializer
+from .models import Product, ProductTag
+from .serializers import ProductSerializer, ProductReviewSerializer, ProductTagSerializer
 
 
 class ProductDetailView(RetrieveAPIView):
@@ -26,3 +26,8 @@ class ProductReviewCreateView(CreateAPIView):
     def create(self, request, *args, **kwargs):
         response = super().create(request, *args, **kwargs)
         return Response(response.data, status=status.HTTP_201_CREATED, content_type='application/json')
+
+
+class ProductTagListView(ListAPIView):
+    queryset = ProductTag.objects.all()
+    serializer_class = ProductTagSerializer
