@@ -1,8 +1,3 @@
-
-
-
-
-
 """
 Django settings for shop project.
 
@@ -47,7 +42,6 @@ INSTALLED_APPS = [
     'app_basket.apps.AppBasketConfig',
     'app_order.apps.AppOrderConfig',
     'app_payment.apps.AppPaymentConfig',
-    'app_profile.apps.AppProfileConfig',
     'app_product.apps.AppProductConfig',
     'app_auth.apps.AppAuthConfig',
 
