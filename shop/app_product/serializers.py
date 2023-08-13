@@ -19,7 +19,6 @@ class ProductReviewSerializer(serializers.ModelSerializer):
     rate = serializers.IntegerField(validators=[MaxValueValidator(5)])
 
 
-
 class ProductSpecificationSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductSpecification
@@ -38,9 +37,8 @@ class ProductSerializer(serializers.ModelSerializer):
     specifications = ProductSpecificationSerializer(source='productspecification_set', many=True)
     tags = ProductTagSerializer(source='producttag_set', many=True)
 
-
     class Meta:
         model = Product
         fields = (
-        'id', 'category', 'price', 'count', 'date', 'title', 'description', 'full_description', 'free_delivery',
-        'images', 'reviews', 'specifications', 'tags')
+            'id', 'category', 'price', 'count', 'date', 'title', 'description', 'full_description', 'free_delivery',
+            'images', 'reviews', 'specifications', 'tags')
