@@ -6,7 +6,7 @@ from django.core.paginator import EmptyPage
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from django.db.models import Q, Count
+from django.db.models import Q, Count, Avg
 from django.core.paginator import Paginator
 from django.http import Http404
 
@@ -43,43 +43,43 @@ class CatalogView(APIView):
             'producttag_set'
         ).all()
 
+        # Фильтры
         if name_filter:
             products = products.filter(Q(title__icontains=name_filter) | Q(description__icontains=name_filter))
-
         if min_price_filter:
             products = products.filter(price__gte=min_price_filter)
-
         if max_price_filter:
             products = products.filter(price__lte=max_price_filter)
-
         if free_delivery_filter:
             products = products.filter(free_delivery=True)
-
         if available_filter:
             products = products.exclude(count=0)
-
-        if category_filter and category_filter != 'NaN':
+        if category_filter and category_filter != 'NaN':  # TODO (для куратора) категория в запросе всегда NaN
+            # '...=1&category=NaN&sort=...', также при выборе любой подкатегории, в адресную строку подставляется id
+            # родительской категории, не понимаю как это исправить
             products = products.filter(category=category_filter)
 
+        # сортировка
         if sort_by == 'rating':
-            products = products.order_by('-productreview__rate')
+            products = products.annotate(avg_rating=Avg('productreview__rate')).order_by('avg_rating')
         elif sort_by == 'price':
             products = products.order_by('price')
         elif sort_by == 'reviews':
-            products = products.annotate(num_reviews=Count('productreview')).order_by('-num_reviews')
+            products = products.annotate(num_reviews=Count('productreview')).order_by('num_reviews')
         else:
-            products = products.order_by('-date')
+            products = products.order_by('date')
         if sort_type == 'inc':
             products = products.reverse()
 
-        paginator = Paginator(products, request.query_params.get('limit', 20))
-        page_number = request.query_params.get('currentPage', 1)
-
+        # пагинация
+        paginator = Paginator(products, request.query_params.get('limit'))
+        page_number = request.query_params.get('currentPage')
         try:
             current_page = paginator.page(page_number)
         except EmptyPage:
             raise Http404("No such page")
 
+        # сериализация
         serializer = ProductSerializer(current_page, many=True)
         response_data = {
             'items': serializer.data,

@@ -29,7 +29,7 @@ class Category(models.Model):
     image = models.ImageField(upload_to=directory_path)
 
     class Meta:
-        verbose_name_plural='Categories'
+        verbose_name_plural = 'Categories'
 
     def __str__(self):
         return self.title

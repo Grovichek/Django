@@ -8,9 +8,9 @@ from app_catalog.models import Category
 
 def directory_path(instance, filename: str) -> str:
     if instance.product.category.parent_category is None:
-        my_path='categories/{category}/{title}/images/{filename}{extension}'
+        my_path = 'categories/{category}/{title}/images/{filename}{extension}'
     else:
-        my_path='categories/{parent_category}/{category}/{title}/images/{filename}{extension}'
+        my_path = 'categories/{parent_category}/{category}/{title}/images/{filename}{extension}'
     return my_path.format(
         parent_category=instance.product.category.parent_category,
         category=instance.product.category,
