@@ -1,4 +1,5 @@
 from django.core.validators import MaxValueValidator
+from django.db.models import Avg
 from rest_framework import serializers
 from rest_framework.request import Request
 
@@ -37,8 +38,14 @@ class ProductSerializer(serializers.ModelSerializer):
     specifications = ProductSpecificationSerializer(source='productspecification_set', many=True)
     tags = ProductTagSerializer(source='producttag_set', many=True)
 
+    rating = serializers.SerializerMethodField()
+
+    def get_rating(self, product):
+        avg_rating = product.productreview_set.aggregate(Avg('rate'))['rate__avg']
+        return avg_rating if avg_rating is not None else 0
+
     class Meta:
         model = Product
         fields = (
             'id', 'category', 'price', 'count', 'date', 'title', 'description', 'full_description', 'free_delivery',
-            'images', 'reviews', 'specifications', 'tags')
+            'images', 'reviews', 'specifications', 'tags', 'rating')

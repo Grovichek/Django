@@ -134,4 +134,7 @@ class SalesView(APIView):
 
 
 class BannersView(APIView):
-    ...
+    def get(self, request):
+        banners = Product.objects.all()
+        serializer = ProductSerializer(banners, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
