@@ -1,10 +1,19 @@
 from os import path
 
 from django.db import models
+from django.db.models import SET_NULL
+
+from app_catalog.models import Category
 
 
 def directory_path(instance, filename: str) -> str:
-    return 'products/{title}/images/{filename}{extension}'.format(
+    if instance.product.category.parent_category is None:
+        my_path = 'categories/{category}/{title}/images/{filename}{extension}'
+    else:
+        my_path = 'categories/{parent_category}/{category}/{title}/images/{filename}{extension}'
+    return my_path.format(
+        parent_category=instance.product.category.parent_category,
+        category=instance.product.category,
         title=instance.product.title,
         filename=instance.product.productimage_set.count() + 1,
         extension=path.splitext(filename)[-1],
@@ -12,7 +21,7 @@ def directory_path(instance, filename: str) -> str:
 
 
 class Product(models.Model):
-    category = models.IntegerField()
+    category = models.ForeignKey(Category, on_delete=SET_NULL, null=True, blank=True)
     price = models.DecimalField(max_digits=8, decimal_places=2)
     count = models.IntegerField(default=0)
     date = models.DateTimeField(auto_now_add=True)
@@ -20,6 +29,13 @@ class Product(models.Model):
     description = models.TextField(max_length=200)
     full_description = models.TextField(max_length=2000)
     free_delivery = models.BooleanField(default=False)
+    limited = models.BooleanField(default=False)
+    # TODO (для куратора) есть ощущение что для sale лучше бы подошёл вариант с отдельной моделью,
+    #  так как по сваггеру просят вернуть немного другой ответ, отличающийся от типичного запроса продукта,
+    #  но всё работает и без этого, просто как было бы правильнее?
+    sale_price = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
+    date_from = models.DateField(null=True, blank=True)
+    date_to = models.DateField(null=True, blank=True)
 
     def __str__(self):
         return self.title
