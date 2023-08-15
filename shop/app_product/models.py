@@ -29,6 +29,7 @@ class Product(models.Model):
     description = models.TextField(max_length=200)
     full_description = models.TextField(max_length=2000)
     free_delivery = models.BooleanField(default=False)
+    limited = models.BooleanField(default=False)
 
     def __str__(self):
         return self.title

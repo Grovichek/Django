@@ -100,8 +100,11 @@ class PopularProductsView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-class LimitedView(APIView):
-    ...
+class LimitedProductsView(APIView):
+    def get(self, request):
+        limited_products = Product.objects.filter(limited=True)
+        serializer = ProductSerializer(limited_products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class SalesView(APIView):
