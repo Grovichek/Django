@@ -1,3 +1,4 @@
+from datetime import date
 from app_product.models import Product
 from app_product.serializers import ProductSerializer
 from .models import Category
@@ -72,8 +73,8 @@ class CatalogView(APIView):
             products = products.reverse()
 
         # пагинация
-        paginator = Paginator(products, request.query_params.get('limit'))
-        page_number = request.query_params.get('currentPage')
+        paginator = Paginator(products, request.query_params.get('limit', 20))
+        page_number = request.query_params.get('currentPage', 1)
         try:
             current_page = paginator.page(page_number)
         except EmptyPage:
@@ -108,7 +109,28 @@ class LimitedProductsView(APIView):
 
 
 class SalesView(APIView):
-    ...
+    def get(self, request):
+        today = date.today()
+        sale_products = Product.objects.filter(date_from__lte=today, date_to__gt=today, sale_price__isnull=False)
+
+        # пагинация
+        paginator = Paginator(sale_products, 20)
+        page_number = request.query_params.get('currentPage', 1)
+        print(request.query_params)
+
+        try:
+            current_page = paginator.page(page_number)
+        except EmptyPage:
+            raise Http404("No such page")
+
+        # сериализация
+        serializer = ProductSerializer(current_page, many=True)
+        response_data = {
+            'items': serializer.data,
+            'currentPage': current_page.number,
+            'lastPage': paginator.num_pages
+        }
+        return Response(response_data, status=status.HTTP_200_OK)
 
 
 class BannersView(APIView):
