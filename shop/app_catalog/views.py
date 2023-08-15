@@ -89,8 +89,15 @@ class CatalogView(APIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
 
-class PopularView(APIView):
-    ...
+class PopularProductsView(APIView):
+    def get(self, request):
+        popular_products = Product.objects.annotate(
+            avg_rating=Avg('productreview__rate'),
+            num_reviews=Count('productreview')
+        ).filter(avg_rating__gt=4.5, num_reviews__gt=5)
+
+        serializer = ProductSerializer(popular_products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class LimitedView(APIView):
