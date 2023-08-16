@@ -1,7 +1,6 @@
 from django.core.validators import MaxValueValidator
 from django.db.models import Avg
 from rest_framework import serializers
-from rest_framework.request import Request
 
 from .models import Product, ProductImage, ProductReview, ProductSpecification, ProductTag
 

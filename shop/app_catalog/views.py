@@ -1,8 +1,5 @@
 from datetime import date
-from app_product.models import Product
-from app_product.serializers import ProductSerializer
-from .models import Category
-from .serializers import CategorySerializer
+
 from django.core.paginator import EmptyPage
 from rest_framework.views import APIView
 from rest_framework.response import Response
@@ -11,7 +8,13 @@ from django.db.models import Q, Count, Avg
 from django.core.paginator import Paginator
 from django.http import Http404
 
+from app_product.models import Product
+from app_product.serializers import ProductSerializer
+from .models import Category
+from .serializers import CategorySerializer
 
+
+# Эндпоинт для получения списка основных категорий
 class CategoryListView(APIView):
     def get(self, request):
         main_categories = Category.objects.filter(parent_category=None)
@@ -19,14 +22,17 @@ class CategoryListView(APIView):
         return Response(serializer.data)
 
 
+# Эндпоинт для просмотра каталога продуктов с фильтрами и пагинацией
 class CatalogView(APIView):
     def get(self, request):
+        # Извлечение фильтров из параметров запроса
         filters = {
             key.split('[', 1)[1].split(']')[0]: value
             for key, value in request.query_params.items()
             if key.startswith('filter[')
         }
 
+        # Обработка фильтров
         name_filter = filters.get('name', '')
         min_price_filter = filters.get('minPrice', None)
         max_price_filter = filters.get('maxPrice', None)
@@ -35,8 +41,8 @@ class CatalogView(APIView):
         category_filter = filters.get('category', None)
         sort_by = request.query_params.get('sort', 'date')
         sort_type = request.query_params.get('sortType', 'dec')
-        tags_filter = request.query_params.getlist('tags')
 
+        # Запрос продуктов с предварительной загрузкой связанных данных
         products = Product.objects.select_related('category').prefetch_related(
             'productimage_set',
             'productreview_set',
@@ -44,7 +50,7 @@ class CatalogView(APIView):
             'producttag_set'
         ).all()
 
-        # Фильтры
+        # Применение фильтров к запросу продуктов
         if name_filter:
             products = products.filter(Q(title__icontains=name_filter) | Q(description__icontains=name_filter))
         if min_price_filter:
@@ -55,12 +61,10 @@ class CatalogView(APIView):
             products = products.filter(free_delivery=True)
         if available_filter:
             products = products.exclude(count=0)
-        if category_filter and category_filter != 'NaN':  # TODO (для куратора) категория в запросе всегда NaN
-            # '...=1&category=NaN&sort=...', также при выборе любой подкатегории, в адресную строку подставляется id
-            # родительской категории, не понимаю как это исправить
+        if category_filter and category_filter != 'NaN':
             products = products.filter(category=category_filter)
 
-        # сортировка
+        # Применение сортировки к запросу продуктов
         if sort_by == 'rating':
             products = products.annotate(avg_rating=Avg('productreview__rate')).order_by('avg_rating')
         elif sort_by == 'price':
@@ -72,7 +76,7 @@ class CatalogView(APIView):
         if sort_type == 'inc':
             products = products.reverse()
 
-        # пагинация
+        # Инициализация пагинатора
         paginator = Paginator(products, request.query_params.get('limit', 20))
         page_number = request.query_params.get('currentPage', 1)
         try:
@@ -80,7 +84,7 @@ class CatalogView(APIView):
         except EmptyPage:
             raise Http404("No such page")
 
-        # сериализация
+        # Сериализация и формирование ответа
         serializer = ProductSerializer(current_page, many=True)
         response_data = {
             'items': serializer.data,
@@ -90,6 +94,7 @@ class CatalogView(APIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
 
+# Эндпоинт для получения популярных продуктов с высоким рейтингом и отзывами
 class PopularProductsView(APIView):
     def get(self, request):
         popular_products = Product.objects.annotate(
@@ -101,6 +106,7 @@ class PopularProductsView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+# Эндпоинт для получения ограниченных продуктов
 class LimitedProductsView(APIView):
     def get(self, request):
         limited_products = Product.objects.filter(limited=True)
@@ -108,22 +114,22 @@ class LimitedProductsView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+# Эндпоинт для получения продуктов со скидкой
 class SalesView(APIView):
     def get(self, request):
         today = date.today()
         sale_products = Product.objects.filter(date_from__lte=today, date_to__gt=today, sale_price__isnull=False)
 
-        # пагинация
-        paginator = Paginator(sale_products, 20)
+        # Инициализация пагинатора
+        paginator = Paginator(sale_products, request.query_params.get('limit', 20))
         page_number = request.query_params.get('currentPage', 1)
-        print(request.query_params)
 
         try:
             current_page = paginator.page(page_number)
         except EmptyPage:
             raise Http404("No such page")
 
-        # сериализация
+        # Сериализация и формирование ответа
         serializer = ProductSerializer(current_page, many=True)
         response_data = {
             'items': serializer.data,
@@ -133,6 +139,7 @@ class SalesView(APIView):
         return Response(response_data, status=status.HTTP_200_OK)
 
 
+# Эндпоинт для получения баннеров
 class BannersView(APIView):
     def get(self, request):
         banners = Product.objects.all()
