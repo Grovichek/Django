@@ -82,23 +82,23 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'diploma',  # Название базы
-        'USER': 'diploma',  # Имя пользователя
-        'PASSWORD': 'diploma',  # Пароль пользователя #
-        'HOST': 'localhost',
-        'PORT': '3306',
-    }
-}
-
 # DATABASES = {
 #     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',  # Путь к файлу базы данных SQLite3
+#         'ENGINE': 'django.db.backends.mysql',
+#         'NAME': 'diploma',  # Название базы
+#         'USER': 'diploma',  # Имя пользователя
+#         'PASSWORD': 'diploma',  # Пароль пользователя #
+#         'HOST': 'localhost',
+#         'PORT': '3306',
 #     }
 # }
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/4.2/ref/settings/#auth-password-validators
