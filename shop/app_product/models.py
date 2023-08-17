@@ -30,9 +30,6 @@ class Product(models.Model):
     full_description = models.TextField(max_length=2000)
     free_delivery = models.BooleanField(default=False)
     limited = models.BooleanField(default=False)
-    # TODO (для куратора) есть ощущение что для sale лучше бы подошёл вариант с отдельной моделью,
-    #  так как по сваггеру просят вернуть немного другой ответ, отличающийся от типичного запроса продукта,
-    #  но всё работает и без этого, просто как было бы правильнее?
     sale_price = models.DecimalField(max_digits=8, decimal_places=2, null=True, blank=True)
     date_from = models.DateField(null=True, blank=True)
     date_to = models.DateField(null=True, blank=True)
