@@ -1,36 +1,82 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-from .models import Basket
-from .serializers import BasketSerializer
 from app_product.models import Product
+from app_product.serializers import ProductSerializer
+
+from rest_framework.views import APIView
+from django.http import JsonResponse
+from rest_framework.parsers import JSONParser
+
 
 class BasketView(APIView):
-    def get(self, request):
-        basket_items = Basket.objects.all()
-        serializer = BasketSerializer(basket_items, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
-
-    def post(self, request):
-        product_id = request.data.get('id')
-        count = request.data.get('count')
-
+    def post(self, request, *args, **kwargs):
         try:
-            product = Product.objects.get(id=product_id)
-            basket_item, created = Basket.objects.get_or_create(product=product)
-            basket_item.count = count
-            basket_item.save()
-            serializer = BasketSerializer(basket_item)
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        except Product.DoesNotExist:
-            return Response({"message": "Product not found"}, status=status.HTTP_400_BAD_REQUEST)
+            # Получение идентификатора товара и количества из запроса
+            product_id = request.data.get('id')
+            product_count = request.data.get('count')
 
-    def delete(self, request):
-        product_id = request.data.get('product_id')
+            try:
+                product = Product.objects.get(id=product_id)
+            except Product.DoesNotExist:
+                return JsonResponse({"error": "Product not found"}, status=404)
 
+            # Инициализация корзины в сессии, если отсутствует
+            if 'cart' not in request.session:
+                request.session['cart'] = {}
+
+            cart = request.session['cart']
+
+            if str(product_id) not in cart:
+                # Добавление товара в корзину, если он еще не там
+                cart[str(product_id)] = {
+                    "product": ProductSerializer(product).data,
+                    "count": 0
+                }
+
+            # Увеличение количества товара в корзине
+            cart[str(product_id)]['count'] += product_count
+            request.session.modified = True
+
+            return self.get(request)  # Возврат обновленной корзины
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    def get(self, request, *args, **kwargs):
         try:
-            product = Product.objects.get(id=product_id)
-            Basket.objects.filter(product=product).delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
-        except Product.DoesNotExist:
-            return Response({"message": "Product not found"}, status=status.HTTP_400_BAD_REQUEST)
+            # Получение текущей корзины из сессии
+            cart = request.session.get('cart', {})
+            products_in_cart = []
+
+            # Формирование списка товаров в корзине с количеством
+            for product_id, cart_item in cart.items():
+                product_data = cart_item['product']
+                product_data['count'] = cart_item['count']
+                products_in_cart.append(product_data)
+
+            # Возврат списка товаров в корзине в формате JSON
+            return JsonResponse(products_in_cart, status=200, safe=False)
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
+
+    def delete(self, request, *args, **kwargs):
+        try:
+            data = JSONParser().parse(request)
+            product_id = data.get('id')
+            product_count = data.get('count', 1)
+
+            if not product_id:
+                return JsonResponse({"error": "Item ID is required"}, status=400)
+
+            cart = request.session.get('cart', {})
+            if str(product_id) in cart:
+                if product_count > 1:
+                    # Удаление всех товаров данного типа из корзины
+                    del cart[str(product_id)]
+                else:
+                    # Уменьшение количества товара в корзине
+                    cart[str(product_id)]['count'] -= 1
+                    if cart[str(product_id)]['count'] <= 0:
+                        del cart[str(product_id)]
+                request.session.modified = True
+
+            return self.get(request)  # Возврат обновленной корзины
+        except Exception as e:
+            return JsonResponse({"error": str(e)}, status=500)
