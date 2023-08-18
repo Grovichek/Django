@@ -31,6 +31,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
+
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
@@ -43,7 +44,7 @@ INSTALLED_APPS = [
     'app_order.apps.AppOrderConfig',
     'app_payment.apps.AppPaymentConfig',
     'app_product.apps.AppProductConfig',
-    'app_auth.apps.AppAuthConfig',
+    'app_user.apps.AppUserConfig',
 
 ]
 
@@ -170,3 +171,4 @@ REST_FRAMEWORK = {
         # 'rest_framework.renderers.TemplateHTMLRenderer',
     ],
 }
+
