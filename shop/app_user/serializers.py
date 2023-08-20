@@ -4,7 +4,6 @@ from .models import UserProfile
 
 
 class UserProfileSerializer(serializers.ModelSerializer):
-    email = serializers.SerializerMethodField()
     avatar = serializers.SerializerMethodField()
 
     def get_email(self, obj):
@@ -18,4 +17,4 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserProfile
-        fields = ('fullName', 'email', 'phone', 'avatar')
+        fields = ('fullName', 'email', 'phone', 'avatar', 'email')

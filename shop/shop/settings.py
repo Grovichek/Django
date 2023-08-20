@@ -38,7 +38,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'frontend',
-    'app_home.apps.AppHomeConfig',
     'app_catalog.apps.AppCatalogConfig',
     'app_basket.apps.AppBasketConfig',
     'app_order.apps.AppOrderConfig',

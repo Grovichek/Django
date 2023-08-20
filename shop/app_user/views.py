@@ -45,20 +45,21 @@ def sign_up(request):
         name = data.get('name')
         username = data.get('username')
         password = data.get('password')
+        email = data.get('email')
 
         try:
-            user = User.objects.create_user(username=username, password=password)
+            user = User.objects.create_user(username=username, password=password, email=email)
             user.first_name = name
             user.save()
 
-            user_profile = UserProfile.objects.create(user=user, fullName=name)
+            user_profile = UserProfile.objects.create(user=user, fullName=name, email=email)
             serializer = UserProfileSerializer(user_profile)
 
             login(request, user)
 
             return JsonResponse(serializer.data, status=201)
         except IntegrityError:
-            return JsonResponse({"message": "User with this username already exists."}, status=400)
+            return JsonResponse({"message": "User with this username or email already exists."}, status=400)
 
     return JsonResponse({"message": "Method not supported."}, status=405)
 

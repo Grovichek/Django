@@ -19,6 +19,7 @@ phone_regex = RegexValidator(regex=r"^\+?1?\d{8,15}$")
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     fullName = models.CharField(default='No name', max_length=20)
+    email = models.EmailField(unique=True, null=True)
     phone = models.CharField(validators=[phone_regex], max_length=16, unique=True, blank=True)
     avatar = models.ImageField(upload_to=directory_path, blank=True, null=True)
 
