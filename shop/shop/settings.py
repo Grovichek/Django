@@ -9,8 +9,11 @@ https://docs.djangoproject.com/en/4.2/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
+import logging
 import os
 from pathlib import Path
+
+import colorlog
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -85,9 +88,9 @@ WSGI_APPLICATION = 'shop.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'diploma',  # Название базы
-        'USER': 'diploma',  # Имя пользователя
-        'PASSWORD': 'diploma',  # Пароль пользователя #
+        'NAME': 'diploma',
+        'USER': 'diploma',
+        'PASSWORD': 'diploma',
         'HOST': 'localhost',
         'PORT': '3306',
     }
@@ -147,27 +150,39 @@ DATA_UPLOAD_MAX_MEMORY_SIZE = 15242880  # TODO
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': [
+        'rest_framework.renderers.JSONRenderer',
+    ],
+}
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
     'handlers': {
         'console': {
             'class': 'logging.StreamHandler',
+            'formatter': 'colored',
+        },
+    },
+    'formatters': {
+        'colored': {
+            '()': colorlog.ColoredFormatter,
+            'format': '%(log_color)s [%(levelname)s] %(message)s',
+            'log_colors': {
+                'DEBUG': 'white',
+                'INFO': 'green',
+                'WARNING': 'yellow',
+                'ERROR': 'red',
+                'CRITICAL': 'red',
+            },
         },
     },
     'loggers': {
         'django.request': {
             'handlers': ['console'],
-            'level': 'DEBUG',  # change debug level as appropiate
+            'level': 'DEBUG',
             'propagate': False,
         },
     },
 }
-
-REST_FRAMEWORK = {
-    'DEFAULT_RENDERER_CLASSES': [
-        'rest_framework.renderers.JSONRenderer',
-        # 'rest_framework.renderers.TemplateHTMLRenderer',
-    ],
-}
-
