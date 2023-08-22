@@ -61,18 +61,17 @@ class OrderDetailView(APIView):
     def post(self, request, order_id):
         # Получаем заказ по ID
         order = get_object_or_404(Order, id=order_id)
+        try:
+            # Обновляем данные заказа из запроса
+            order.delivery_type = request.data.get('delivery_type', order.delivery_type)
+            order.payment_type = request.data.get('payment_type', order.payment_type)
+            order.status = request.data.get('status', order.status)
+            order.city = request.data.get('city', order.city)
+            order.address = request.data.get('address', order.address)
+            order.total_cost = request.data.get('total_cost', order.total_cost)
+            order.save()
 
-        # Обновляем данные заказа из запроса
-        order.delivery_type = request.data.get('delivery_type', order.delivery_type)
-        order.payment_type = request.data.get('payment_type', order.payment_type)
-        order.status = request.data.get('status', order.status)
-        order.city = request.data.get('city', order.city)
-        order.address = request.data.get('address', order.address)
-        order.total_cost = request.data.get('total_cost', order.total_cost)
-        order.save()
+            return Response({'orderId': order.id}, status=status.HTTP_200_OK)
 
-        serializer = OrderSerializer(order, data=order.__dict__)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except Order.DoesNotExist:
+            return Response({"message": "Order not found"}, status=status.HTTP_404_NOT_FOUND)
