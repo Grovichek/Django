@@ -10,7 +10,7 @@ class UserProfileSerializer(serializers.ModelSerializer):
 
     def get_avatar(self, obj):
         return {
-            "src": obj.avatar.url if obj.avatar else None,
+            "src": obj.avatar.url or None,
             "alt": obj.fullName
         }
 

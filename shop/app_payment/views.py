@@ -7,7 +7,7 @@ import random
 class PaymentView(APIView):
     def post(self, request, orderId):
         # TODO фронт не отправляет номер карты
-        payment_number = request.data.get('number') or random.choice([1234567891011121, 1234567891011122])
+        payment_number = request.data.get('number') or random.randint(10 ** 15, 10 ** 16 - 1)
         if len(str(payment_number)) == 16:
             if int(payment_number) % 2 == 0 and str(payment_number)[-1] != '0':
                 data = {
