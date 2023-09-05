@@ -36,6 +36,9 @@ class ProductSerializer(serializers.ModelSerializer):
     reviews = ProductReviewSerializer(source='productreview_set', many=True)
     specifications = ProductSpecificationSerializer(source='productspecification_set', many=True)
     tags = ProductTagSerializer(source='producttag_set', many=True)
+    salePrice = serializers.DecimalField(source='sale_price', max_digits=8, decimal_places=2, allow_null=True)
+    dateFrom = serializers.DateField(source='date_from', allow_null=True)
+    dateTo = serializers.DateField(source='date_to', allow_null=True)
 
     rating = serializers.SerializerMethodField()
 
@@ -46,5 +49,5 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = (
-            'id', 'category', 'price', 'count', 'date', 'title', 'description', 'full_description', 'free_delivery',
-            'images', 'reviews', 'specifications', 'tags', 'rating')
+            'id', 'category', 'price', 'salePrice', 'dateFrom', 'dateTo', 'count', 'date', 'title', 'description',
+            'full_description', 'free_delivery', 'images', 'reviews', 'specifications', 'tags', 'rating')

@@ -118,7 +118,9 @@ class LimitedProductsView(APIView):
 class SalesView(APIView):
     def get(self, request):
         today = date.today()
-        sale_products = Product.objects.filter(date_from__lte=today, date_to__gt=today, sale_price__isnull=False)
+        sale_products = Product.objects.filter(
+            date_from__lte=today, date_to__gt=today, sale_price__isnull=False
+        ).order_by('sale_price')
 
         # Инициализация пагинатора
         paginator = Paginator(sale_products, request.query_params.get('limit', 20))
