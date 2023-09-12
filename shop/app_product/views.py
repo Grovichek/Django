@@ -16,6 +16,7 @@ class ProductDetailView(RetrieveAPIView):
     lookup_field = 'id'
 
 
+
 # Класс для создания и получения отзывов о продукте
 class ProductReviewView(APIView):
     # Получение отзывов о продукте

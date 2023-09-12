@@ -1,3 +1,4 @@
+import random
 from datetime import date
 
 from django.core.paginator import EmptyPage
@@ -144,6 +145,10 @@ class SalesView(APIView):
 # Эндпоинт для получения баннеров
 class BannersView(APIView):
     def get(self, request):
-        banners = Product.objects.all()
-        serializer = ProductSerializer(banners, many=True)
+
+        all_banners = Product.objects.filter(count__gt=0)
+
+        random_banners = random.sample(list(all_banners), 4)
+        serializer = ProductSerializer(random_banners, many=True)
+
         return Response(serializer.data, status=status.HTTP_200_OK)

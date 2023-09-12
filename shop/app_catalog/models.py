@@ -1,6 +1,11 @@
 from os import path
 
 from django.db import models
+from transliterate import translit
+
+
+def translate_path(text):
+    return translit(text, 'ru', reversed=True).replace(' ', '_')
 
 
 def directory_path(instance, filename: str) -> str:
@@ -9,11 +14,11 @@ def directory_path(instance, filename: str) -> str:
     else:
         my_path = 'categories/{parent_category}/{title}/{title}{extension}'
 
-    return my_path.format(
+    return translate_path(my_path.format(
         title=instance.title,
         extension=path.splitext(filename)[-1],
         parent_category=instance.parent_category
-    )
+    ))
 
 
 class Category(models.Model):

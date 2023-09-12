@@ -16,6 +16,7 @@ class ProductReviewSerializer(serializers.ModelSerializer):
         model = ProductReview
         fields = ('author', 'email', 'text', 'rate', 'date',)
 
+    date = serializers.DateTimeField(format='%Y-%m-%d %H:%M', read_only=True)
     rate = serializers.IntegerField(validators=[MaxValueValidator(5)])
 
 
@@ -39,6 +40,8 @@ class ProductSerializer(serializers.ModelSerializer):
     salePrice = serializers.DecimalField(source='sale_price', max_digits=8, decimal_places=2, allow_null=True)
     dateFrom = serializers.DateField(source='date_from', allow_null=True)
     dateTo = serializers.DateField(source='date_to', allow_null=True)
+    freeDelivery = serializers.BooleanField(source='free_delivery', allow_null=True)
+    fullDescription = serializers.CharField(source='full_description', allow_null=True)
 
     rating = serializers.SerializerMethodField()
 
@@ -50,4 +53,4 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = (
             'id', 'category', 'price', 'salePrice', 'dateFrom', 'dateTo', 'count', 'date', 'title', 'description',
-            'full_description', 'free_delivery', 'images', 'reviews', 'specifications', 'tags', 'rating')
+            'fullDescription', 'freeDelivery', 'images', 'reviews', 'specifications', 'tags', 'rating')

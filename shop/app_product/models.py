@@ -2,8 +2,13 @@ from os import path
 
 from django.db import models
 from django.db.models import SET_NULL
+from transliterate import translit
 
 from app_catalog.models import Category
+
+
+def translate_path(text):
+    return translit(text, 'ru', reversed=True).replace(' ', '_')
 
 
 def directory_path(instance, filename: str) -> str:
@@ -11,13 +16,14 @@ def directory_path(instance, filename: str) -> str:
         my_path = 'categories/{category}/{title}/images/{filename}{extension}'
     else:
         my_path = 'categories/{parent_category}/{category}/{title}/images/{filename}{extension}'
-    return my_path.format(
+
+    return translate_path(my_path.format(
         parent_category=instance.product.category.parent_category,
         category=instance.product.category,
         title=instance.product.title,
         filename=instance.product.productimage_set.count() + 1,
         extension=path.splitext(filename)[-1],
-    )
+    ))
 
 
 class Product(models.Model):
@@ -40,7 +46,7 @@ class Product(models.Model):
 
 class ProductImage(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    src = models.ImageField(upload_to=directory_path)
+    src = models.ImageField(upload_to=directory_path, max_length=500)
     alt = models.CharField(max_length=200)
 
 

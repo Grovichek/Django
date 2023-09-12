@@ -12,12 +12,16 @@ class OrderProductSerializer(serializers.ModelSerializer):
 
 class OrderSerializer(serializers.ModelSerializer):
     products = serializers.SerializerMethodField()
+    createdAt = serializers.DateTimeField(source='created_at', format='%Y-%m-%d %H:%M')
+    deliveryType = serializers.CharField(source='delivery_type')
+    paymentType = serializers.CharField(source='payment_type')
+    totalCost = serializers.DecimalField(max_digits=10, decimal_places=2, source='total_cost')
 
     class Meta:
         model = Order
         fields = (
-            'id', 'created_at', 'fullName', 'email', 'phone', 'delivery_type', 'payment_type',
-            'total_cost', 'status', 'city', 'address', 'products'
+            'id', 'createdAt', 'fullName', 'email', 'phone', 'deliveryType', 'paymentType',
+            'totalCost', 'status', 'city', 'address', 'products'
         )
 
     def get_products(self, obj):

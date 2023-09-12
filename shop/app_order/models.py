@@ -12,7 +12,7 @@ class Order(models.Model):
 
     delivery_type = models.CharField(max_length=10, blank=True)
     payment_type = models.CharField(max_length=10, blank=True)
-    status = models.CharField(max_length=10, default='in process')
+    status = models.CharField(max_length=10, default=None)
     city = models.CharField(max_length=100, blank=True)
     address = models.CharField(max_length=200, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)

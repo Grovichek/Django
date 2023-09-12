@@ -17,6 +17,7 @@ class PaymentView(APIView):
                     "month": request.data.get('month'),
                     "code": request.data.get('code'),
                 }
+                # Удаление корзины из сессии
                 if 'cart' in request.session:
                     del request.session['cart']
                     request.session.modified = True
