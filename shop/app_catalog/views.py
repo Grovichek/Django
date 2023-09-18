@@ -85,6 +85,7 @@ class CatalogView(APIView):
         except EmptyPage:
             raise Http404("No such page")
 
+
         # Сериализация и формирование ответа
         serializer = ProductSerializer(current_page, many=True)
         response_data = {
